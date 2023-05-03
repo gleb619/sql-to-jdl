@@ -135,6 +135,8 @@ public class SqlService {
      */
     @Cacheable("SqlService.getDisplayFieldOfTable")
     public String getDisplayFieldOfTable(final SqlTable table) {
+        if(!applicationProperties.isFindDisplayField()) return null;
+
         String tableName = table.getName();
         log.debug("getDisplayFieldOfTable called: ({})", tableName);
         return informationSchemaService
@@ -145,6 +147,7 @@ public class SqlService {
             .filter(c -> !isForeignKey(tableName, c.getName()))
             .findFirst()
             .map(ColumnInformation::getName)
+            .map(SqlUtils::changeToCamelCase)
             .orElse(null);
     }
 

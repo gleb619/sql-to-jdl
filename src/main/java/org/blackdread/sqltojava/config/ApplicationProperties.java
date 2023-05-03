@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.blackdread.sqltojava.entity.JdlFieldEnum;
+import org.blackdread.sqltojava.entity.SqlTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -37,6 +38,8 @@ public class ApplicationProperties {
     private final Export export;
     private final List<String> reservedList;
     private final Map<String, JdlFieldEnum> jdlTypeOverrides;
+    private final Boolean findDisplayField;
+    private final Boolean checkTableReferenceColumn;
 
     @SuppressWarnings("unchecked")
     public ApplicationProperties(
@@ -50,8 +53,9 @@ public class ApplicationProperties {
         final List<String> ignoredTableNames,
         final Export export,
         final String reservedKeywords,
-        final Map<String, JdlFieldEnum> jdlTypeOverrides
-    ) {
+        final Map<String, JdlFieldEnum> jdlTypeOverrides,
+        final Boolean findDisplayField,
+        final Boolean checkTableReferenceColumn) {
         log.info("Loading ApplicationProperties...");
         this.databaseToExport = databaseToExport;
         this.databaseObjectPrefix = databaseObjectPrefix;
@@ -72,6 +76,8 @@ public class ApplicationProperties {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
         this.jdlTypeOverrides = Optional.ofNullable(jdlTypeOverrides).orElse(Collections.emptyMap());
+        this.findDisplayField = findDisplayField;
+        this.checkTableReferenceColumn = checkTableReferenceColumn;
     }
 
     public String getDatabaseToExport() {
@@ -146,4 +152,13 @@ public class ApplicationProperties {
             return "{\"key\": []}";
         }
     }
+
+    public Boolean isFindDisplayField() {
+        return findDisplayField;
+    }
+
+    public Boolean isCheckTableReferenceColumn() {
+        return checkTableReferenceColumn;
+    }
+
 }

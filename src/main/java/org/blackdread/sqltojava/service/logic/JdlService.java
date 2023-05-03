@@ -130,7 +130,7 @@ public class JdlService {
 
         if (sqlService.isEnumTable(column.getTable().getName())) return Optional.empty();
 
-        if (column.isForeignKey()) {
+        if (column.isForeignKey() && properties.isCheckTableReferenceColumn()) {
             // check if table referenced is an enum, otherwise, skip
             final SqlTable tableOfForeignKey = sqlService.getTableOfForeignKey(column);
             if (!sqlService.isEnumTable(tableOfForeignKey.getName())) {
@@ -234,6 +234,7 @@ public class JdlService {
         final boolean isNullable = column.isNullable();
 
         final boolean isUnique = column.isUnique();
+        final boolean isPrimaryKey = column.isPrimaryKey();
 
         if (sqlService.isEnumTable(inverseSideTable.getName())) {
             log.info("Skipped relation of ({}) as ({}) is an enum table", column, inverseSideTable);
@@ -249,7 +250,7 @@ public class JdlService {
         if (isPureManyToManyTable) {
             relationType = RelationType.ManyToMany;
         } else {
-            if (isUnique) {
+            if (isUnique || isPrimaryKey) {
                 relationType = RelationType.OneToOne;
             } else {
                 relationType = RelationType.ManyToOne;

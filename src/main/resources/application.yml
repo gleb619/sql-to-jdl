@@ -43,3 +43,5 @@ application:
     export:
         path: ./my-project-jdl.jh
         type: jdl
+    find-display-field: true # Determines whether fields are to be searched for in relation. if true - search display field for a relationship
+    check-table-reference-column: true # Check if table referenced is an enum for foreign key's column, if true - remove reference column from entity
